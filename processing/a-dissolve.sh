@@ -1,6 +1,6 @@
 # input filename + file
 INPUT_NAME=vietnam-communes
-INPUT=${1}/input/${INPUT_NAME}.shp
+INPUT=${1}/tmp/${INPUT_NAME}.shp
 # copy input shapefile into tmp directory
 # for districts and provinces + their uniq field
 for ADMIN in 'district;DISTCODE02' 'province;PROCODE02'

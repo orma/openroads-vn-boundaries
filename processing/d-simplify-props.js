@@ -1,8 +1,10 @@
-var readdirSync = require('fs').readdirSync;
 var createReadStream = require('fs').createReadStream;
 var createWriteStream = require('fs').createWriteStream;
+var readdirSync = require('fs').readdirSync;
 var path = require('path');
 var parallel = require('async').parallel;
+
+var baseDir = 'data/processing/d-simplify-props'
 
 // streams to read and write geojsons
 var geojsonStream = require('geojson-stream');
@@ -11,9 +13,8 @@ var stringifier = geojsonStream.stringify();
 // helps split single-line json into chunked-by-line geojson
 var split = require('split');
 // tmp dir with geojsons
-var adminPath = './data/tmp';
+var adminPath = `${baseDir}/tmp`;
 var admins = readdirSync(adminPath)
-admins = admins.slice(1, admins.length)
 
 // create list of async functions to pass to parallel
 const adminTasks = admins.map((admin) => {
@@ -28,7 +29,7 @@ const adminTasks = admins.map((admin) => {
       feature.properties = makeNewProperties(properties, basename)
     })
     .pipe(stringifier)
-    .pipe(createWriteStream(`./data/output/vietnam-${basename}-simplified.geojson`))
+    .pipe(createWriteStream(`${baseDir}/output/vietnam-${basename}-simplified.geojson`))
     .on('close', () => { cb(null, null) })
   }
 });
@@ -43,7 +44,7 @@ const adminTasks = admins.map((admin) => {
 function makeNewProperties (properties, admin) {
   const newProperties = {};
   if (RegExp(/commune/).test(admin)) {
-    newProperties.en_name = EN_name
+    newProperties.en_name = properties.EN_name
     newProperties.id = properties.COMCODE02;
     newProperties.p_id = properties.DISTCODE02
   } else if (RegExp(/district/).test(admin)) {

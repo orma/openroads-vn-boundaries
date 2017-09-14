@@ -1,5 +1,5 @@
 # enforce right-hand rule for polygons
-for ADMIN in district province
+for ADMIN in communes district province
 do
   INPUT_FILE=${1}/tmp/vietnam-${ADMIN}-wgs84.geojson
   OUTPUT_FILE=${1}/output/vietnam-${ADMIN}-cleaned.geojson

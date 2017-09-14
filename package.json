@@ -6,6 +6,9 @@
   "repository": "https://github.com/orma/openroads-vn-boundaries.git",
   "author": "maxgrossman <m.grossman1813@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "chmod +x ./admin-tables-pipe.sh"
+  },
   "dependencies": {
     "async": "^2.5.0",
     "geojson-rewind": "^0.2.0",

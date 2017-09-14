@@ -1,4 +1,4 @@
-for ADMIN in district province
+for ADMIN in communes district province
 do
   # use admin name to generate output and input file names
   INPUT=${1}/tmp/vietnam-${ADMIN}.geojson

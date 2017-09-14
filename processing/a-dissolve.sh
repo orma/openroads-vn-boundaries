@@ -1,20 +1,27 @@
-# input filename + file
+# Synopysis: creates district and province level admins by dissolving (merging geometrise) of features with same uniq id.
+
+# input name is used to build names of inputs and output files of each process
 INPUT_NAME=vietnam-communes
+# input for dissolve to make district and province level boundaries as well as convert the commune shapefile to geojson
 INPUT=${1}/tmp/${INPUT_NAME}.shp
-# copy input shapefile into tmp directory
-# for districts and provinces + their uniq field
+
+# for both the district and province, create a new geojson that dissolves features on the unique field id supplied
+# on the right hand side of the semi-colon
 for ADMIN in 'district;DISTCODE02' 'province;PROCODE02'
 do
-  # split ADMIN into array including admin name and its field
+  # split ${ADMIN} string on the semi-colon to grab the admin name and field id
   ADMIN_ARRAY=(${ADMIN//;/ })
-  # use admin name to generate output file name
+  # make the unique output file per the current admin name
   OUTPUT=${1}/output/vietnam-${ADMIN_ARRAY[0]}.geojson
-  # set DISSOLVE_FIELD to admin field
+  # make ${DISSOLVE_FIELD} per the current admin's dissolve field
   DISSOLVE_FIELD=${ADMIN_ARRAY[1]}
-  # dissolve on admin field and write to file
+  # dissolve on admin field with ogr2ogr and write output as a geojson
+  # this comman creates a new geojson where features are geometries that share the same ${DISSOLVE_FIELD}
+  # 'ST_UNION' merges geometries.
+  # 'GROUP BY' tells gdal which gemetries to merge together
   ogr2ogr -f 'GeoJSON' "${OUTPUT}" "${INPUT}" -dialect sqlite -sql $'SELECT ST_Union(geometry), * FROM "'"$INPUT_NAME"$'" GROUP BY '"$DISSOLVE_FIELD"
 done
-# also convert communes shp to geojosn
-IN_SHP=${1}/tmp/${INPUT_NAME}.shp
+# name of geojson output file
 OUT_GJSN=${1}/output/${INPUT_NAME}.geojson
-ogr2ogr -f 'GeoJSON' "${OUT_GJSN}" "${IN_SHP}"
+# since communes don't need to be dissolved, do a simple shp->geojson conversion
+ogr2ogr -f 'GeoJSON' "${INPUT}" "${IN_SHP}"

@@ -15,13 +15,17 @@ do
   OUTPUT=${1}/output/vietnam-${ADMIN_ARRAY[0]}.geojson
   # make ${DISSOLVE_FIELD} per the current admin's dissolve field
   DISSOLVE_FIELD=${ADMIN_ARRAY[1]}
-  # dissolve on admin field with ogr2ogr and write output as a geojson
+  # dissolve on admin field with ogr2ogr and write output as a geojson; also reproject from UTM to wgs84
   # this comman creates a new geojson where features are geometries that share the same ${DISSOLVE_FIELD}
   # 'ST_UNION' merges geometries.
   # 'GROUP BY' tells gdal which gemetries to merge together
-  ogr2ogr -f 'GeoJSON' "${OUTPUT}" "${INPUT}" -dialect sqlite -sql $'SELECT ST_Union(geometry), * FROM "'"$INPUT_NAME"$'" GROUP BY '"$DISSOLVE_FIELD"
+  # -t_srs is a flag for reprojection
+  # EPSG:4326 is the WGS84 EPSG code
+  # http://spatialreference.org/ref/epsg/wgs-84/
+  ogr2ogr -t_srs EPSG:4326 -f 'GeoJSON' "${OUTPUT}" "${INPUT}" -dialect sqlite -sql $'SELECT ST_Union(geometry), * FROM "'"$INPUT_NAME"$'" GROUP BY '"$DISSOLVE_FIELD"
 done
 # name of geojson output file
 OUT_GJSN=${1}/output/${INPUT_NAME}.geojson
 # since communes don't need to be dissolved, do a simple shp->geojson conversion
-ogr2ogr -f 'GeoJSON' "${INPUT}" "${IN_SHP}"
+# make sure also to reproject
+ogr2ogr -t_srs EPSG:4326 -f 'GeoJSON' "${OUT_GJSN}" "${INPUT}"

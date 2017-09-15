@@ -7,7 +7,7 @@
   "author": "maxgrossman <m.grossman1813@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "chmod +x ./admin-tables-pipe.sh"
+    "start": "chmod +x ./admin-tables-pipe.sh && ./admin-tables-pipe.sh"
   },
   "dependencies": {
     "async": "^2.5.0",

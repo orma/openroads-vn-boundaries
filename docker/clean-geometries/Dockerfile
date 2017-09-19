@@ -14,4 +14,4 @@ COPY ./vietnam-communes.shp /workspace/vietnam-communes.shp
 COPY ./vietnam-communes.shx /workspace/vietnam-communes.shx
 COPY ./run.sh /workspace/run.sh
 # on entry into container, run the run.sh script
-ENTRYPOINT ["/bin/bash", "/workspace/run.sh"]
+ENTRYPOINT ["/bin/bash", "/workspace/main.sh"]

@@ -7,7 +7,7 @@ INPUT=${1}/tmp/${INPUT_NAME}.shp
 
 # for both the district and province, create a new geojson that dissolves features on the unique field id supplied
 # on the right hand side of the semi-colon
-for ADMIN in 'district;DISTCODE02' 'province;PROCODE02'
+for ADMIN in 'communes;COMCODE02' 'district;DISTCODE02' 'province;PROCODE02'
 do
   # split ${ADMIN} string on the semi-colon to grab the admin name and field id
   ADMIN_ARRAY=(${ADMIN//;/ })
@@ -24,8 +24,4 @@ do
   # http://spatialreference.org/ref/epsg/wgs-84/
   ogr2ogr -t_srs EPSG:4326 -f 'GeoJSON' "${OUTPUT}" "${INPUT}" -dialect sqlite -sql $'SELECT ST_Union(geometry), * FROM "'"$INPUT_NAME"$'" GROUP BY '"$DISSOLVE_FIELD"
 done
-# name of geojson output file
-OUT_GJSN=${1}/output/${INPUT_NAME}.geojson
-# since communes don't need to be dissolved, do a simple shp->geojson conversion
-# make sure also to reproject
-ogr2ogr -t_srs EPSG:4326 -f 'GeoJSON' "${OUT_GJSN}" "${INPUT}"
+# ç

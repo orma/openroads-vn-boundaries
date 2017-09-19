@@ -6,7 +6,7 @@
 for ADMIN in communes district province
 do
   # generate unique input and output files as it has been done in previous examples
-  INPUT_FILE=${1}/tmp/vietnam-${ADMIN}-wgs84.geojson
+  INPUT_FILE=${1}/tmp/vietnam-${ADMIN}-filled-holes.geojson
   OUTPUT_FILE=${1}/output/vietnam-${ADMIN}-cleaned.geojson
   # remove crs object to match current GeoJSON spec using sed.
   # the below command was found in following place

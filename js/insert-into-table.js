@@ -43,7 +43,6 @@ var adminFileStream = createReadStream(adminFile)
 .on('data', (feature) => {
 // for each feature, insert it into the table using the insertIntoTable function
   if (feature.properties) {
-    console.log(feature.properties);
     insertIntoTable(feature, basename, st, db)
   }
 })
@@ -70,6 +69,7 @@ function insertIntoTable (feature, admin, st, db) {
   if (!properties.en_name) {
     properties.en_name = '...'
   }
+  var t;
   return db.transaction((t) => {
     return db('admin_boundaries')
     .transacting(t)
@@ -93,5 +93,9 @@ function insertIntoTable (feature, admin, st, db) {
       t.rollback();
       throw e;
     })
-  });
+  })
+  .then(r => {})
+  .catch((e) => {
+    throw e;vim
+  })
 }

@@ -87,7 +87,7 @@ function insertIntoTable (feature, admin, st, db) {
       name_vn: properties.vn_name
     })
     .into('admin_boundaries')
-    .then(() => {console.log(new Date())})
+    .then(() => {});
   })
   .catch((e) => {
     console.log(e);

@@ -97,8 +97,6 @@ function cleanName(name, admin) {
       cleanName = name.replace('Tt. ', '') 
     } else if (new RegExp(/TP./).test(name)) {
       cleanName = name.replace(/TP./, '')
-      if (new RegExp(/Ho Chi M/)) { cleanName = cleanName + `in`}
-      if (new RegExp(/Phon/)) { cleanName = cleanName + `g`}
     } else if (new RegExp(/P. /).test(name)) {
       cleanName = name.replace('P. ', '')
     } else if (new RegExp(/ D./).test(name)){

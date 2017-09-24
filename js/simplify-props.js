@@ -11,8 +11,6 @@ var parser = geojsonStream.parse();
 var stringifier = geojsonStream.stringify();
 // module to read path
 var path = require('path');
-// parallel allows for reading each admin geojson stream asynchronously
-var parallel = require('async').parallel;
 // since the output of `c-update-geojson-spec.sh` writes geojsons to a single line, the stream needs to be broken up into lines, otherwise it will not work
 // split is a module that does just this.
 var split = require('split');
@@ -26,7 +24,7 @@ writeSimplifiedProps(admin);
 
 /**
  * simplifies input properties to spec needed to make admin postgis tables
- *
+ * @func makeNewProperties
  * @param {object} properties original properties from streaming geojson
  * @param {string} admin admin unit name, like 'commune', 'district,'
  * @return {object} newProperties simplified properties generated from properties
@@ -35,22 +33,27 @@ function makeNewProperties (properties, admin) {
   const newProperties = {};
   if (new RegExp(/commune/).test(admin)) {
     newProperties.en_name = properties.EN_name
+    newProperties.vn_name = properties.COMNAME_1
     newProperties.id = properties.COMCODE02;
     newProperties.p_id = properties.DISTCODE02
   } else if (new RegExp(/district/).test(admin)) {
     newProperties.en_name = properties.D_EName
+    newProperties.vn_name = properties.DISTNAME_
     newProperties.id = properties.DISTCODE02
     newProperties.p_id = properties.PROCODE02
   } else if (new RegExp(/province/).test(admin)) {
     newProperties.en_name = properties.P_EName
+    newProperties.vn_name = properties.PRONAME_1
     newProperties.id = properties.PROCODE02
   }
   newProperties.en_name = cleanName(newProperties.en_name, admin);
+  newProperties.vn_name = cleanName(newProperties.vn_name, admin);
   return newProperties;
 }
 
 /**
  * reads in raw geojson and writes out simplified geojson for provided admin level
+ * @func writeSimplifiedProps
  * @param {string} admin string representation of admin type
  *
  */
@@ -79,18 +82,23 @@ function writeSimplifiedProps(adminPath) {
 
 /**
  * returns cleaned version of place name
+ * @func cleanName
  * @param {string} name admin unit name
  * @return {string} cleaned admin unit name
  */
 function cleanName(name, admin) {
-  let cleanName = name;
+  let cleanName;
   if (name) {
     if (new RegExp(/X. /).test(name)) {
       cleanName = name.replace('X. ','');
     } else if (new RegExp(/P. /).test(name)) {
       cleanName = name.replace('P. ', '')
     } else if (new RegExp(/Tt. /).test(name)) {
-      cleanName = name.replace('Tt. ', '')
+      cleanName = name.replace('Tt. ', '') 
+    } else if (new RegExp(/TP./).test(name)) {
+      cleanName = name.replace(/TP./, '')
+      if (new RegExp(/Ho Chi M/)) { cleanName = cleanName + `in`}
+      if (new RegExp(/Phon/)) { cleanName = cleanName + `g`}
     } else if (new RegExp(/P. /).test(name)) {
       cleanName = name.replace('P. ', '')
     } else if (new RegExp(/ D./).test(name)){
@@ -101,6 +109,7 @@ function cleanName(name, admin) {
     if (Boolean(Number(cleanName))) {
       cleanName = `${admin} ${cleanName}`
     }
-  }
-  return cleanName
+    cleanName = cleanName.trim();
+  } else { cleanName = ''}
+  return cleanName;
 }

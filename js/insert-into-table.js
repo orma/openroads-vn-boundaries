@@ -69,10 +69,8 @@ function insertIntoTable (feature, admin, st, db) {
   if (!properties.en_name) {
     properties.en_name = '...'
   }
-  var t;
-  return db.transaction((t) => {
-    return db('admin_boundaries')
-    .transacting(t)
+  db.transaction((t) => {
+    return t
     .insert({
       // shared identifier for each row in admin table
       type: admin,
@@ -86,16 +84,12 @@ function insertIntoTable (feature, admin, st, db) {
       // english name of admin unit
       name_en: properties.en_name,
       // vietnamese name of admin unit
-      name_vn: ''
+      name_vn: properties.vn_name
     })
-    .then(t.commit)
-    .catch((e) => {
-      t.rollback();
-      throw e;
-    })
+    .into('admin_boundaries')
+    .then(() => {console.log(new Date())})
   })
-  .then(r => {})
   .catch((e) => {
-    throw e;vim
-  })
-}
+    console.log(e);
+  });
+};

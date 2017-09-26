@@ -1,5 +1,5 @@
 # Synopysis: links a set of I/O geoprocessing scripts that transform a commune level shapefile of Vietnam admin areas
-###########  into three postgis tables at commune, district, and province levels/
+###########  into postgis table that includes data from commune, district, and commune level admin areas
 
 
 # input directory that holds to which the initial shapefiles are downloaded from s3

@@ -12,11 +12,12 @@ a pipeline to take vietnam admin unit shapefiles and insert them as postgis tabl
 
 ### docker
 [mac](https://docs.docker.com/docker-for-mac/install/#where-to-go-next)
+
 [pc](https://docs.docker.com/docker-for-windows/install/)
 
 #### data
 
-create a folder `./data/input`. the pipeline handles downloading data from s3.
+data is downloaded from an s3 bucket. There no need to add input data as it is added while the pipeline is running.
 
 #### database
 
@@ -33,7 +34,7 @@ module.exports = {
 
 #### adding an additional processing module
 
-TBA
+to.be.added
 
 # run
 

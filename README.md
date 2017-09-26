@@ -4,17 +4,23 @@ a pipeline to take vietnam admin unit shapefiles and insert them as postgis tabl
 
 ### install
 
+#### node packages
 `$ yarn install`
 
-### configuration
+#### s3 cli
+`$ pip install awscli`
+
+### docker
+[mac](https://docs.docker.com/docker-for-mac/install/#where-to-go-next)
+[pc](https://docs.docker.com/docker-for-windows/install/)
 
 #### data
 
-create a folder `./data/input` and add in the necessary `vietnam-communes.shp` file and its related files
+create a folder `./data/input`. the pipeline handles downloading data from s3.
 
 #### database
 
-add a a file `./db/local/index.js` of the following spec
+add a file `./db/local/index.js` of the following spec
 
 ```javascript
 module.exports = {
@@ -24,6 +30,10 @@ module.exports = {
   }
 }
 ```
+
+#### adding an additional processing module
+
+TBA
 
 # run
 

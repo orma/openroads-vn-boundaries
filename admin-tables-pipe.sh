@@ -1,10 +1,9 @@
 # Synopysis: links a set of I/O geoprocessing scripts that transform a commune level shapefile of Vietnam admin areas
 ###########  into three postgis tables at commune, district, and province levels/
 
-# copy input shapefiles from the s3 bucket in which they live
-echo --- downloading input boundaries from s3 ---
-aws s3 cp s3://openroads-vn-boundaries ./data/input --recursive
 
+# input directory that holds to which the initial shapefiles are downloaded from s3
+INPUT_DIR=./data/input
 # output directory that holds the final output of linked processes
 OUT_DIR=./data/output
 # the base processing directory that includes sub directories that I/O data for each process
@@ -19,6 +18,12 @@ rm -rf ${PROCESSING_BASE_DIR}
 # make handoff and process directories for current pipeline run
 mkdir ${PROCESSING_BASE_DIR}
 mkdir ${HNDF_DIR}
+mkdir ${INPUT_DIR}
+
+# copy input shapefiles from the s3 bucket in which they live
+echo --- downloading input boundaries from s3 ---
+aws s3 cp s3://openroads-vn-boundaries ${INPUT_DIR} --recursive
+
 
 # make directories in ${PROCESSING_BASE_DIR} for each process's I/O these process scripts live in ./processing
 for FILE in ./processing/*
@@ -69,4 +74,5 @@ done
 # clean up temp directories and remove the input data
 rm -rf ${HNDF_DIR}
 rm -rf ${PROCESSING_BASE_DIR}
-rm -f ./data/input/*
+rm -R ${INPUT_DIR}
+

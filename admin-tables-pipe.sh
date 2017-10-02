@@ -16,14 +16,11 @@ rm -rf ${HNDF_DIR}
 rm -rf ${PROCESSING_BASE_DIR}
 
 # make handoff and process directories for current pipeline run
-mkdir ${PROCESSING_BASE_DIR}
-mkdir ${HNDF_DIR}
-mkdir ${INPUT_DIR}
+mkdir -p ${PROCESSING_BASE_DIR}
+mkdir -p ${HNDF_DIR}
+mkdir -p ${INPUT_DIR}
 
-# copy input shapefiles from the s3 bucket in which they live
-echo --- downloading input boundaries from s3 ---
-aws s3 cp s3://openroads-vn-boundaries ${INPUT_DIR} --recursive
-
+sh source.sh ${INPUT_DIR}
 
 # make directories in ${PROCESSING_BASE_DIR} for each process's I/O these process scripts live in ./processing
 for FILE in ./processing/*
@@ -47,7 +44,7 @@ do
     then
       if [[ $PROCESS_SUBDIR == *"dissolve"* ]]
       then
-        cp -R ./data/input/. ${PROCESS_SUBDIR}/
+        cp -R ./data/input/ ${PROCESS_SUBDIR}/
       fi
     fi
   done
@@ -60,6 +57,7 @@ do
   fi
   # move input data to process's tmp dir so that any pipeline process errors allow for original input to be inspected.
   cp -R ${PROCESS_DIR}/input/. ${PROCESS_DIR}/tmp/
+
   # run process with command specific to if it is a shell process or javascript process
   echo --- running ${FILENAME} ---
   if [[ $FILE == *".sh"* ]]

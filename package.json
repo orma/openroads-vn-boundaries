@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "async": "^2.5.0",
+    "bluebird": "^3.5.0",
+    "dirty-json": "^0.4.1",
     "geojson-rewind": "^0.2.0",
     "geojson-stream": "^0.0.1",
     "iconv-lite": "^0.4.19",

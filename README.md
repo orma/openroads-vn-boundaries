@@ -32,10 +32,6 @@ module.exports = {
 }
 ```
 
-#### adding an additional processing module
-
-to.be.added
-
 # run
 
 `yarn run start`

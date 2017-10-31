@@ -25,8 +25,6 @@ sh source.sh ${INPUT_DIR}
 # make directories in ${PROCESSING_BASE_DIR} for each process's I/O these process scripts live in ./processing
 for FILE in ./processing/*
 do
-  # make process file availabe
-  chmod +x ${FILE}
   # get base filename from its path to generate the process's ${PROCESS_DIR} IN ${PROCESS_BASE_DIR}
   FILEBASE=${FILE##*/}
   FILESPLIT=(${FILEBASE//./ })
@@ -70,7 +68,7 @@ do
   cp -R ${PROCESS_DIR}/output/. ${HNDF_DIR}/
 done
 # clean up temp directories and remove the input data
-rm -rf ${HNDF_DIR}
-rm -rf ${PROCESSING_BASE_DIR}
-rm -R ${INPUT_DIR}
+# rm -rf ${HNDF_DIR}
+# rm -rf ${PROCESSING_BASE_DIR}
+# rm -R ${INPUT_DIR}
 

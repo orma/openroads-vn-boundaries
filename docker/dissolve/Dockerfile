@@ -5,7 +5,6 @@ FROM geodata/gdal
 # make a workspace directory
 RUN mkdir -p /workspace/
 # copy over python scripts and initial data.
-COPY ./vietnam-communes.cpg /workspace/vietnam-communes.cpg
 COPY ./vietnam-communes.dbf /workspace/vietnam-communes.dbf
 COPY ./vietnam-communes.prj /workspace/vietnam-communes.prj
 COPY ./vietnam-communes.qpj /workspace/vietnam-communes.qpj

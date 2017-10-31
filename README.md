@@ -34,4 +34,4 @@ module.exports = {
 
 # run
 
-`yarn run start`
+`yarn start`

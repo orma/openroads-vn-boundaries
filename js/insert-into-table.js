@@ -9,6 +9,7 @@ var readdirSync = require('fs').readdirSync;
 var geojsonStream = require('geojson-stream');
 var parser = geojsonStream.parse();
 var stringifier = geojsonStream.stringify();
+Promise = require('bluebird');
 // module to read path
 var path = require('path');
 // parallel allows for reading each admin geojson stream asynchronously
@@ -34,21 +35,22 @@ var admin = readdirSync(adminInPath).find((admin) => new RegExp(process.argv[3])
 var basename = admin.split('-')[1]
 // here's the path to the current admin file
 var adminFile = path.join(adminInPath, admin)
-// stream of this admin file
-var adminFileStream = createReadStream(adminFile)
-// pipe split for the lines needed to send along to the geojson parser
-.pipe(split())
-// the geojson parser for parsing the feature collection
-.pipe(parser)
-.on('data', (feature) => {
-// for each feature, insert it into the table using the insertIntoTable function
-  if (feature.properties) {
-    insertIntoTable(feature, basename, st, db)
-  }
-})
-.on('end', () => {
-  db.destroy();
-})
+
+function insertAdmin (knex, Promise, adminFile) {
+  return new Promise ((res, rej) => {
+    createReadStream(adminFile)
+    .on('error', rej)
+    .pipe(split())
+    .on('error', rej)
+    .pipe(parser())
+    .on('error', rej)
+    .pipe(through((feature, _, next) => {
+      insertIntoTable(feature, admin, st, db, next)
+      .then(() => re())
+      .catch((e) => { console.log(e); rej(); })
+    }))
+  })
+}
 
 /**
  * transforms feature into postgis table row and inserts it into the proper admin table
@@ -59,18 +61,15 @@ var adminFileStream = createReadStream(adminFile)
  * @param {object} db kenx object for connecting to the database
  *
  */
-function insertIntoTable (feature, admin, st, db) {
+function insertIntoTable (feature, admin, st, db, next) {
   // generate properties and geometry objects from feature object
   const properties = feature.properties;
   const geometry = feature.geometry;
-  if (admin === 'communes') {
-    admin = 'commune';
-  }
-  if (!properties.en_name) {
-    properties.en_name = '...'
-  }
+  if (admin === 'communes') { admin = 'commune'; }
+  if (![0, 11317, 11715, 40906, 71714].includes(properties.id)) { next() }
   db.transaction((t) => {
-    return t
+    return db('admin_boundaries')
+    .transacting(t) 
     .insert({
       // shared identifier for each row in admin table
       type: admin,
@@ -86,10 +85,11 @@ function insertIntoTable (feature, admin, st, db) {
       // vietnamese name of admin unit
       name_vn: properties.vn_name
     })
-    .into('admin_boundaries')
-    .then(() => {});
+    .then(t.commit)
+    .catch(t.rollback);
   })
-  .catch((e) => {
-    console.log(e);
-  });
+  .catch((e) => { console.log(e); done(); })
+  then(() => done());
 };
+
+insertAdmin(db, Promise, adminFile)

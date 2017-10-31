@@ -16,7 +16,8 @@ var knex = require('knex')({
   pool: {
     min: 2,
     max: 10
-  }
+  },
+  acquireConnectionTimeout: 100000
 });
 
 module.exports = knex;

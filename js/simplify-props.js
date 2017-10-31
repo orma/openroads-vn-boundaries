@@ -33,17 +33,17 @@ function makeNewProperties (properties, admin) {
   const newProperties = {};
   if (new RegExp(/commune/).test(admin)) {
     newProperties.en_name = properties.EN_name
-    newProperties.vn_name = properties.COMNAME_1
+    newProperties.vn_name = properties.COMNAME
     newProperties.id = properties.COMCODE02;
     newProperties.p_id = properties.DISTCODE02
   } else if (new RegExp(/district/).test(admin)) {
     newProperties.en_name = properties.D_EName
-    newProperties.vn_name = properties.DISTNAME_
+    newProperties.vn_name = properties.DISTNAME
     newProperties.id = properties.DISTCODE02
     newProperties.p_id = properties.PROCODE02
   } else if (new RegExp(/province/).test(admin)) {
     newProperties.en_name = properties.P_EName
-    newProperties.vn_name = properties.PRONAME_1
+    newProperties.vn_name = properties.PRONAME
     newProperties.id = properties.PROCODE02
   }
   newProperties.en_name = cleanName(newProperties.en_name, admin);
@@ -107,7 +107,8 @@ function cleanName(name, admin) {
     if (Boolean(Number(cleanName))) {
       cleanName = `${admin} ${cleanName}`
     }
-    cleanName = cleanName.trim();
+    cleanName.trim()
   } else { cleanName = ''}
+  // make it titlecase
   return cleanName;
 }

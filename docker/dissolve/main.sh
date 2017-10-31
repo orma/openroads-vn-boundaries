@@ -18,6 +18,7 @@ do
   # -t_srs is a flag for reprojection
   # EPSG:4326 is the WGS84 EPSG code
   # http://spatialreference.org/ref/epsg/wgs-84/
+  # echo ${QUERY}
   ogr2ogr -t_srs EPSG:4326 -f 'GeoJSON' "${OUTPUT}" "${INPUT}" -dialect sqlite -sql $'SELECT ST_Union(geometry), * FROM "'"$INPUT_NAME"$'" GROUP BY '"$DISSOLVE_FIELD"
 done
 

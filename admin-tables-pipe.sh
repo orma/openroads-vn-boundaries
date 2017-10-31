@@ -1,6 +1,9 @@
 # Synopysis: links a set of I/O geoprocessing scripts that transform a commune level shapefile of Vietnam admin areas
-###########  into three postgis tables at commune, district, and province levels/
+###########  into postgis table that includes data from commune, district, and commune level admin areas
 
+
+# input directory that holds to which the initial shapefiles are downloaded from s3
+INPUT_DIR=./data/input
 # output directory that holds the final output of linked processes
 OUT_DIR=./data/output
 # the base processing directory that includes sub directories that I/O data for each process
@@ -13,14 +16,15 @@ rm -rf ${HNDF_DIR}
 rm -rf ${PROCESSING_BASE_DIR}
 
 # make handoff and process directories for current pipeline run
-mkdir ${PROCESSING_BASE_DIR}
-mkdir ${HNDF_DIR}
+mkdir -p ${PROCESSING_BASE_DIR}
+mkdir -p ${HNDF_DIR}
+mkdir -p ${INPUT_DIR}
+
+sh source.sh ${INPUT_DIR}
 
 # make directories in ${PROCESSING_BASE_DIR} for each process's I/O these process scripts live in ./processing
 for FILE in ./processing/*
 do
-  # make process file availabe
-  chmod +x ${FILE}
   # get base filename from its path to generate the process's ${PROCESS_DIR} IN ${PROCESS_BASE_DIR}
   FILEBASE=${FILE##*/}
   FILESPLIT=(${FILEBASE//./ })
@@ -38,7 +42,7 @@ do
     then
       if [[ $PROCESS_SUBDIR == *"dissolve"* ]]
       then
-        cp -R ./data/input/. ${PROCESS_SUBDIR}/
+        cp -R ./data/input/ ${PROCESS_SUBDIR}/
       fi
     fi
   done
@@ -51,6 +55,7 @@ do
   fi
   # move input data to process's tmp dir so that any pipeline process errors allow for original input to be inspected.
   cp -R ${PROCESS_DIR}/input/. ${PROCESS_DIR}/tmp/
+
   # run process with command specific to if it is a shell process or javascript process
   echo --- running ${FILENAME} ---
   if [[ $FILE == *".sh"* ]]
@@ -62,6 +67,8 @@ do
   # copy output contents to handoff directory for the next process to grab
   cp -R ${PROCESS_DIR}/output/. ${HNDF_DIR}/
 done
-# clean up
-rm -rf ${HNDF_DIR}
-rm -rf ${PROCESSING_BASE_DIR}
+# clean up temp directories and remove the input data
+# rm -rf ${HNDF_DIR}
+# rm -rf ${PROCESSING_BASE_DIR}
+# rm -R ${INPUT_DIR}
+

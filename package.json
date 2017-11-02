@@ -1,0 +1,24 @@
+{
+  "name": "openroads-vn-boundaries",
+  "version": "0.0.1",
+  "description": "processing scripts and data for OpenRoads Vietnam admin boundary data",
+  "main": "index.js",
+  "repository": "https://github.com/orma/openroads-vn-boundaries.git",
+  "author": "maxgrossman <m.grossman1813@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "./admin-tables-pipe.sh"
+  },
+  "dependencies": {
+    "async": "^2.5.0",
+    "bluebird": "^3.5.0",
+    "dirty-json": "^0.4.1",
+    "geojson-rewind": "^0.2.0",
+    "geojson-stream": "^0.0.1",
+    "iconv-lite": "^0.4.19",
+    "knex": "^0.13.0",
+    "knex-postgis": "^0.2.2",
+    "pg": "^7.3.0",
+    "split": "^1.0.1"
+  }
+}
